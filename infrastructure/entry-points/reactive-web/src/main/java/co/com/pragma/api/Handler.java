@@ -15,6 +15,7 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -46,6 +47,29 @@ public class Handler {
                     log.trace("Construyendo respuesta HTTP 201 para solicitante: {}", saved);
                     return ServerResponse.status(HttpStatus.CREATED).bodyValue(saved);
                 });
+    }
+
+    public Mono<ServerResponse> solicitanteExistente(ServerRequest serverRequest) {
+        String numeroDocumento = serverRequest.pathVariable("documento");
+        log.trace("Iniciando verificacion de existencia para documento: {}", numeroDocumento);
+
+        return crearSolicitantePort.solicitanteExiste(numeroDocumento)
+                .doOnSubscribe(sub -> log.debug("Consultando existencia del solicitante con documento {}"
+                        , numeroDocumento))
+                .flatMap(existe -> {
+                    if (Boolean.TRUE.equals(existe)) {
+                        log.info("Solicitante con documento {} existe", numeroDocumento);
+                        return ServerResponse.ok()
+                                .bodyValue(Map.of("existe", true, "mensaje", "El solicitante existe"));
+                    } else {
+                        log.warn("No se encontro solicitante con documento {}", numeroDocumento);
+                        return ServerResponse.status(HttpStatus.NOT_FOUND)
+                                .bodyValue(Map.of("existe", false, "mensaje",
+                                        "No se encontro solicitante"));
+                    }
+                })
+                .doOnError(error -> log.error("Error verificando existencia del solicitante {}",
+                        numeroDocumento, error));
     }
 
     public Mono<SolicitanteRequest> validacion(SolicitanteRequest request) {

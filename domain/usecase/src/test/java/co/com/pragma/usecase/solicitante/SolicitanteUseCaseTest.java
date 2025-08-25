@@ -21,7 +21,6 @@ class SolicitanteUseCaseTest {
 
     @Test
     void crearSolicitanteExitoso() {
-
         Solicitante nuevo = new Solicitante();
         nuevo.setCorreoElectronico("test@mail.com");
 
@@ -39,7 +38,6 @@ class SolicitanteUseCaseTest {
 
     @Test
     void crearSolicitanteCorreoDuplicado() {
-
         Solicitante existente = new Solicitante();
         existente.setCorreoElectronico("test@mail.com");
 
@@ -71,5 +69,29 @@ class SolicitanteUseCaseTest {
                 .verify();
 
         Mockito.verify(repository, Mockito.never()).guardarSolicitante(Mockito.any());
+    }
+
+    @Test
+    void solicitanteExisteRetornaTrue() {
+        Mockito.when(repository.existByDocumentoIdentidad("123"))
+                .thenReturn(Mono.just(true));
+
+        StepVerifier.create(useCase.solicitanteExiste("123"))
+                .expectNext(true)
+                .verifyComplete();
+
+        Mockito.verify(repository).existByDocumentoIdentidad("123");
+    }
+
+    @Test
+    void solicitanteExisteRetornaFalse() {
+        Mockito.when(repository.existByDocumentoIdentidad("456"))
+                .thenReturn(Mono.just(false));
+
+        StepVerifier.create(useCase.solicitanteExiste("456"))
+                .expectNext(false)
+                .verifyComplete();
+
+        Mockito.verify(repository).existByDocumentoIdentidad("456");
     }
 }

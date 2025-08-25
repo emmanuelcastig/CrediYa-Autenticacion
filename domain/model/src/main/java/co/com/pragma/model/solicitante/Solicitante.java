@@ -17,7 +17,9 @@ public class Solicitante {
     private Long id;
     private String nombre;
     private String apellido;
+    private String documentoIdentidad;
     private LocalDate fechaNacimiento;
+    private int idRol;
     private String direccion;
     private String telefono;
     private String correoElectronico;

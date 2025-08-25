@@ -40,7 +40,6 @@ class MyReactiveRepositoryAdapterTest {
         entity.setCorreoElectronico("test@mail.com");
     }
 
-
     @Test
     void guardarSolicitanteDebeGuardarYRetornarDomain() {
         when(mapper.map(domain, SolicitanteEntity.class)).thenReturn(entity);
@@ -90,6 +89,39 @@ class MyReactiveRepositoryAdapterTest {
 
         StepVerifier.create(repositoryAdapter.guardarSolicitante(domain))
                 .expectError(NullPointerException.class)
+                .verify();
+    }
+
+    @Test
+    void existByDocumentoIdentidadDebeRetornarTrue() {
+        when(repository.existsByDocumentoIdentidad("123")).thenReturn(Mono.just(true));
+
+        StepVerifier.create(repositoryAdapter.existByDocumentoIdentidad("123"))
+                .expectNext(true)
+                .verifyComplete();
+
+        verify(repository).existsByDocumentoIdentidad("123");
+    }
+
+    @Test
+    void existByDocumentoIdentidadDebeRetornarFalse() {
+        when(repository.existsByDocumentoIdentidad("456")).thenReturn(Mono.just(false));
+
+        StepVerifier.create(repositoryAdapter.existByDocumentoIdentidad("456"))
+                .expectNext(false)
+                .verifyComplete();
+
+        verify(repository).existsByDocumentoIdentidad("456");
+    }
+
+    @Test
+    void existByDocumentoIdentidadDebePropagarError() {
+        when(repository.existsByDocumentoIdentidad("999"))
+                .thenReturn(Mono.error(new RuntimeException("DB failure")));
+
+        StepVerifier.create(repositoryAdapter.existByDocumentoIdentidad("999"))
+                .expectErrorMatches(ex -> ex instanceof RuntimeException &&
+                        ex.getMessage().equals("DB failure"))
                 .verify();
     }
 }

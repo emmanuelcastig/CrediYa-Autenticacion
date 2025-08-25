@@ -5,4 +5,5 @@ import reactor.core.publisher.Mono;
 
 public interface CrearSolicitantePort {
     Mono<Solicitante> crearSolicitante(Solicitante solicitante);
+    Mono<Boolean> solicitanteExiste(String numeroDocumento);
 }

@@ -19,4 +19,9 @@ public class SolicitanteUseCase implements CrearSolicitantePort {
 
     }
 
+    @Override
+    public Mono<Boolean> solicitanteExiste(String numeroDocumento) {
+        return solicitanteRepository.existByDocumentoIdentidad(numeroDocumento);
+    }
+
 }

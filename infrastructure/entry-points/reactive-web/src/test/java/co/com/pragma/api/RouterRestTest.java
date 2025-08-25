@@ -20,8 +20,8 @@ import reactor.core.publisher.Mono;
 import java.util.Collections;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
+
 @ContextConfiguration(classes = {RouterRest.class, Handler.class})
 @WebFluxTest
 @Import(RouterRestTest.TestConfig.class)
@@ -62,6 +62,18 @@ class RouterRestTest {
                 .expectStatus().isCreated()
                 .expectBody(SolicitanteResponse.class)
                 .isEqualTo(response);
+    }
+
+
+    @Test
+    void testSolicitanteExistenteError() {
+        when(crearSolicitantePort.solicitanteExiste("500"))
+                .thenReturn(Mono.error(new RuntimeException("DB error")));
+
+        webTestClient.get()
+                .uri("/api/v1/usuarios/500")
+                .exchange()
+                .expectStatus().is5xxServerError();
     }
 
     static class TestConfig {

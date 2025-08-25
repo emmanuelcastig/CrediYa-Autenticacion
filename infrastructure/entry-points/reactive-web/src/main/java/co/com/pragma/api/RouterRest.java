@@ -3,6 +3,7 @@ package co.com.pragma.api;
 import co.com.pragma.api.dto.SolicitanteRequest;
 import co.com.pragma.api.dto.SolicitanteResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -13,11 +14,13 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
+import static org.springframework.web.reactive.function.server.RequestPredicates.GET;
 import static org.springframework.web.reactive.function.server.RequestPredicates.POST;
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 
 @Configuration
 public class RouterRest {
+
     @Bean
     @RouterOperations({
             @RouterOperation(
@@ -46,13 +49,72 @@ public class RouterRest {
                                                     schema = @Schema(implementation = SolicitanteResponse.class)
                                             )
                                     ),
-                                    @ApiResponse(responseCode = "400", description = "Datos inválidos"),
-                                    @ApiResponse(responseCode = "500", description = "Error interno del servidor")
+                                    @ApiResponse(
+                                            responseCode = "400",
+                                            description = "Datos inválidos o validación fallida"
+                                    ),
+                                    @ApiResponse(
+                                            responseCode = "409",
+                                            description = "Conflicto - El correo electrónico ya está en uso"
+                                    ),
+                                    @ApiResponse(
+                                            responseCode = "500",
+                                            description = "Error interno del servidor"
+                                    )
+                            }
+                    )
+            ),
+            @RouterOperation(
+                    path = "/api/v1/usuarios/{documento}",
+                    beanClass = Handler.class,
+                    beanMethod = "solicitanteExistente",
+                    operation = @Operation(
+                            operationId = "verificarSolicitanteExistente",
+                            summary = "Verificar si un solicitante existe",
+                            description = "Verifica si un solicitante existe en el sistema basado en su documento de identidad",
+                            tags = {"Solicitantes"},
+                            parameters = {
+                                    @Parameter(
+                                            name = "documento",
+                                            description = "Número de documento de identidad del solicitante",
+                                            required = true,
+                                            example = "1234567890",
+                                            schema = @Schema(type = "string")
+                                    )
+                            },
+                            responses = {
+                                    @ApiResponse(
+                                            responseCode = "200",
+                                            description = "Solicitante existe en el sistema",
+                                            content = @Content(
+                                                    mediaType = "application/json",
+                                                    schema = @Schema(implementation = java.util.Map.class,
+                                                            example = "{\"existe\": true, \"mensaje\": \"El solicitante existe\"}")
+                                            )
+                                    ),
+                                    @ApiResponse(
+                                            responseCode = "404",
+                                            description = "Solicitante no encontrado",
+                                            content = @Content(
+                                                    mediaType = "application/json",
+                                                    schema = @Schema(implementation = java.util.Map.class,
+                                                            example = "{\"existe\": false, \"mensaje\": \"No se encontró solicitante\"}")
+                                            )
+                                    ),
+                                    @ApiResponse(
+                                            responseCode = "400",
+                                            description = "Documento inválido o mal formado"
+                                    ),
+                                    @ApiResponse(
+                                            responseCode = "500",
+                                            description = "Error interno del servidor"
+                                    )
                             }
                     )
             )
     })
     public RouterFunction<ServerResponse> routerFunction(Handler handler) {
-        return route(POST("/api/v1/usuarios"), handler::crearSolicitante);
+        return route(POST("/api/v1/usuarios"), handler::crearSolicitante)
+                .andRoute(GET("/api/v1/usuarios/{documento}"), handler::solicitanteExistente);
     }
 }

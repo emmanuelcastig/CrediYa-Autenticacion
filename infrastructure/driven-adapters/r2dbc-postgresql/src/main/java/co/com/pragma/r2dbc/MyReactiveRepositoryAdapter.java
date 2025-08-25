@@ -30,5 +30,10 @@ public class MyReactiveRepositoryAdapter extends ReactiveAdapterOperations<
         return repository.findByCorreoElectronico(correoElectronico)
                 .map(this::toEntity);
     }
+
+    @Override
+    public Mono<Boolean> existByDocumentoIdentidad(String documentoIdentidad) {
+        return repository.existsByDocumentoIdentidad(documentoIdentidad);
+    }
 }
 
