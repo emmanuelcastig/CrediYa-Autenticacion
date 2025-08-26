@@ -4,7 +4,7 @@ import co.com.pragma.api.dto.SolicitanteRequest;
 import co.com.pragma.api.dto.SolicitanteResponse;
 import co.com.pragma.api.mapper.SolicitanteMapper;
 import co.com.pragma.model.solicitante.Solicitante;
-import co.com.pragma.usecase.solicitante.in.CrearSolicitantePort;
+import co.com.pragma.usecase.in.CrearSolicitantePort;
 import jakarta.validation.Validator;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Data
-@Table("solicitantes")
+@Table("solicitantes_hu3")
 public class SolicitanteEntity {
     @Id
     private Long id;
@@ -16,6 +16,7 @@ public class SolicitanteEntity {
     private String apellido;
     private String documentoIdentidad;
     private LocalDate fechaNacimiento;
+    private String clave;
     private int idRol;
     private String direccion;
     private String telefono;

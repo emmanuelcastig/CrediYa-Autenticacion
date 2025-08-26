@@ -6,12 +6,13 @@ CREATE TABLE IF NOT EXISTS rol (
     );
 
 
-CREATE TABLE IF NOT EXISTS solicitantes (
+CREATE TABLE IF NOT EXISTS solicitantes_HU3 (
                                             id BIGSERIAL PRIMARY KEY,
                                             nombre VARCHAR(100) NOT NULL,
     apellido VARCHAR(100) NOT NULL,
     documento_identidad VARCHAR(50) UNIQUE NOT NULL,
     fecha_nacimiento DATE NOT NULL,
+    clave VARCHAR(200) NOT NULL,
     id_rol BIGINT NOT NULL,
     direccion VARCHAR(200) NOT NULL,
     telefono VARCHAR(20) NOT NULL,

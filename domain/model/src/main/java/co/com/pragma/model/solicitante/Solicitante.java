@@ -19,6 +19,7 @@ public class Solicitante {
     private String apellido;
     private String documentoIdentidad;
     private LocalDate fechaNacimiento;
+    private String clave;
     private int idRol;
     private String direccion;
     private String telefono;

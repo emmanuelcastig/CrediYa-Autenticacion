@@ -2,7 +2,7 @@ package co.com.pragma.usecase.solicitante;
 
 import co.com.pragma.model.solicitante.Solicitante;
 import co.com.pragma.model.solicitante.gateways.SolicitanteRepository;
-import co.com.pragma.usecase.solicitante.in.CrearSolicitantePort;
+import co.com.pragma.usecase.in.CrearSolicitantePort;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Mono;
 

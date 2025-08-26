@@ -1,8 +1,10 @@
 package co.com.pragma.config;
 
 import co.com.pragma.model.solicitante.gateways.SolicitanteRepository;
+import co.com.pragma.usecase.autenticacion.AutenticacionUseCase;
+import co.com.pragma.usecase.in.LoginSolicitantePort;
 import co.com.pragma.usecase.solicitante.SolicitanteUseCase;
-import co.com.pragma.usecase.solicitante.in.CrearSolicitantePort;
+import co.com.pragma.usecase.in.CrearSolicitantePort;
 import org.springframework.context.annotation.*;
 
 @Configuration
@@ -23,5 +25,11 @@ public class UseCasesConfig {
     @Primary
     public CrearSolicitantePort crearSolicitantePort() {
         return new SolicitanteUseCase(solicitanteRepository);
+    }
+
+    @Bean
+    @Primary
+    public LoginSolicitantePort loginSolicitantePort() {
+        return new AutenticacionUseCase(solicitanteRepository);
     }
 }

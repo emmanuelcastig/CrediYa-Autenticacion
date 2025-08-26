@@ -21,6 +21,10 @@ public class SolicitanteRequest {
     @Past(message = "La fecha de nacimiento debe ser una fecha pasada")
     private LocalDate fechaNacimiento;
 
+
+    @NotNull
+    private String clave;
+
     @NotNull
     private int idRol;
 

@@ -115,6 +115,7 @@ public class RouterRest {
     })
     public RouterFunction<ServerResponse> routerFunction(Handler handler) {
         return route(POST("/api/v1/usuarios"), handler::crearSolicitante)
-                .andRoute(GET("/api/v1/usuarios/{documento}"), handler::solicitanteExistente);
+                .andRoute(GET("/api/v1/usuarios/{documento}"), handler::solicitanteExistente)
+                .andRoute(POST("/api/v1/login"), handler::login);
     }
 }
