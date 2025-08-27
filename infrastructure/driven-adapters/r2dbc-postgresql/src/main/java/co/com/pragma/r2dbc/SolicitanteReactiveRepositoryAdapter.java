@@ -9,13 +9,13 @@ import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Mono;
 
 @Repository
-public class MyReactiveRepositoryAdapter extends ReactiveAdapterOperations<
+public class SolicitanteReactiveRepositoryAdapter extends ReactiveAdapterOperations<
         Solicitante,
         SolicitanteEntity,
         Long,
-        MyReactiveRepository
+        SolicitanteReactiveRepository
         > implements SolicitanteRepository {
-    public MyReactiveRepositoryAdapter(MyReactiveRepository repository, ObjectMapper mapper) {
+    public SolicitanteReactiveRepositoryAdapter(SolicitanteReactiveRepository repository, ObjectMapper mapper) {
         super(repository, mapper, d -> mapper.map(d, Solicitante.class));
     }
 

@@ -12,7 +12,7 @@ public class SolicitanteResponse {
     private String apellido;
     private String documentoIdentidad;
     private LocalDate fechaNacimiento;
-    private int idRol;
+    private Long idRol;
     private String direccion;
     private String telefono;
     private String correoElectronico;

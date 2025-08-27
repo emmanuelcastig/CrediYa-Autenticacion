@@ -1,6 +1,5 @@
 package co.com.pragma.api.security;
 
-import co.com.pragma.api.config.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -18,14 +17,18 @@ public class JwtAuthenticationManager implements ReactiveAuthenticationManager {
     @Override
     public Mono<Authentication> authenticate(Authentication authentication) {
         String authToken = authentication.getCredentials().toString();
+
         if (!jwtProvider.validateToken(authToken)) {
             return Mono.empty();
         }
+
         String username = jwtProvider.extractUsername(authToken);
+        String rol = jwtProvider.extractRol(authToken);
+
         return Mono.just(new UsernamePasswordAuthenticationToken(
                 username,
                 null,
-                Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"))
+                Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + rol))
         ));
     }
 }

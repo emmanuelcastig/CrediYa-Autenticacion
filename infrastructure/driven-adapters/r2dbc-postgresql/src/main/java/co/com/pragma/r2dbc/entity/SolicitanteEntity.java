@@ -17,7 +17,7 @@ public class SolicitanteEntity {
     private String documentoIdentidad;
     private LocalDate fechaNacimiento;
     private String clave;
-    private int idRol;
+    private Long idRol;
     private String direccion;
     private String telefono;
     private String correoElectronico;

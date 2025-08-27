@@ -1,11 +1,14 @@
 package co.com.pragma.api;
 
-import co.com.pragma.api.config.JwtProvider;
+import co.com.pragma.api.security.JwtProvider;
 import co.com.pragma.api.dto.LoginRequest;
 import co.com.pragma.api.dto.LoginResponse;
 import co.com.pragma.api.dto.SolicitanteRequest;
 import co.com.pragma.api.exception.ValidationException;
 import co.com.pragma.api.mapper.SolicitanteMapper;
+import co.com.pragma.model.rol.Rol;
+import co.com.pragma.model.solicitante.Solicitante;
+import co.com.pragma.usecase.in.BuscarRolPort;
 import co.com.pragma.usecase.in.CrearSolicitantePort;
 import co.com.pragma.usecase.in.LoginSolicitantePort;
 import jakarta.validation.ConstraintViolation;
@@ -30,26 +33,43 @@ public class Handler {
 
     private final CrearSolicitantePort crearSolicitantePort;
     private final LoginSolicitantePort loginSolicitantePort;
+    private final BuscarRolPort buscarRolPort;
     private final Validator validator;
     private final SolicitanteMapper solicitanteMapper;
     private final JwtProvider jwtProvider;
     private final TransactionalOperator transactionalOperator;
 
     public Mono<ServerResponse> login(ServerRequest request) {
+        log.trace("Iniciando proceso de login...");
+
         return request.bodyToMono(LoginRequest.class)
+                .doOnNext(authReq -> log.debug("Petición de login recibida para el correo: {}",
+                        authReq.getEmail()))
                 .flatMap(authReq ->
                         loginSolicitantePort.login(authReq.getEmail(), authReq.getClave())
-                                .doOnNext(solicitante -> log.debug("Autenticación exitosa: {}",
+                                .doOnNext(solicitante -> log.debug("Autenticacion exitosa para correo: {}",
                                         solicitante.getCorreoElectronico()))
-                                .flatMap(solicitante -> {
-                                    String token = jwtProvider.generateToken(solicitante.getCorreoElectronico());
-                                    var authResponse = new LoginResponse(token);
-                                    return ServerResponse.ok().bodyValue(authResponse);
+                                .flatMap(solicitante ->
+                                        buscarRolPort.buscarPorId(solicitante.getIdRol())
+                                                .doOnNext(rol -> log.debug("Rol encontrado: {}", rol.getNombre()))
+                                                .map(rol -> Map.of("solicitante", solicitante, "rol", rol))
+                                )
+                                .flatMap(data -> {
+                                    var solicitante = (Solicitante) data.get("solicitante");
+                                    var rol = (Rol) data.get("rol");
+                                    String token = jwtProvider.generateToken(
+                                            solicitante.getCorreoElectronico(),
+                                            rol.getNombre()
+                                    );
+                                    log.debug("Token generado exitosamente para usuario: {}",
+                                            solicitante.getCorreoElectronico());
+
+                                    return ServerResponse.ok().bodyValue(new LoginResponse(token, rol.getNombre()));
                                 })
                                 .onErrorResume(e -> {
-                                    log.error("Error en el login: {}", e.getMessage());
+                                    log.error("Error en el login: {}", e.getMessage(), e);
                                     return ServerResponse.status(HttpStatus.UNAUTHORIZED)
-                                            .bodyValue(Map.of("error", "Credenciales inválidas"));
+                                            .bodyValue(Map.of("error", "Credenciales invalidas"));
                                 })
                 );
     }

@@ -1,4 +1,4 @@
-package co.com.pragma.api.config;
+package co.com.pragma.api.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -27,10 +27,10 @@ public class JwtProvider {
         this.jwtExpirationMs = jwtExpirationMs;
     }
 
-    // 👉 Generar token
-    public String generateToken(String username) {
+    public String generateToken(String username, String rol) {
         return Jwts.builder()
                 .setSubject(username)
+                .claim("rol", rol)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationMs))
                 .signWith(secretKey, SignatureAlgorithm.HS256)
@@ -38,10 +38,10 @@ public class JwtProvider {
     }
 
 
-    // 👉 Validar token con username
-    public boolean validateToken(String token, String username) {
-        final String tokenUsername = extractUsername(token);
-        return (username.equals(tokenUsername) && !isTokenExpired(token));
+
+
+    public String extractRol(String token) {
+        return extractClaim(token, claims -> claims.get("rol", String.class));
     }
 
     // 👉 Validar token solo

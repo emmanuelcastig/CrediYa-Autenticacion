@@ -15,13 +15,13 @@ import reactor.test.StepVerifier;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class MyReactiveRepositoryAdapterTest {
+class SolicitanteReactiveRepositoryAdapterTest {
 
     @InjectMocks
-    MyReactiveRepositoryAdapter repositoryAdapter;
+    SolicitanteReactiveRepositoryAdapter repositoryAdapter;
 
     @Mock
-    MyReactiveRepository repository;
+    SolicitanteReactiveRepository repository;
 
     @Mock
     ObjectMapper mapper;

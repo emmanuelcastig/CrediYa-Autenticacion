@@ -1,8 +1,5 @@
-package co.com.pragma.api.config;
+package co.com.pragma.api.security;
 
-import co.com.pragma.api.security.CustomAuthenticationEntryPoint;
-import co.com.pragma.api.security.JwtAuthenticationManager;
-import co.com.pragma.api.security.JwtSecurityContextRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
@@ -15,12 +12,6 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 @EnableWebFluxSecurity
 public class SecurityConfig {
 
-    private final JwtProvider jwtProvider;
-
-    public SecurityConfig(JwtProvider jwtProvider) {
-        this.jwtProvider = jwtProvider;
-    }
-
     @Bean
     public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http,
                                                             JwtAuthenticationManager jwtAuthenticationManager,
@@ -29,6 +20,8 @@ public class SecurityConfig {
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .authorizeExchange(exchange -> exchange
                         .pathMatchers("/api/v1/login").permitAll()
+                        .pathMatchers("/api/v1/usuarios/*").hasAnyRole("CLIENTE", "ADMINISTRADOR", "ASESOR")
+                        .pathMatchers("/api/v1/usuarios").hasAnyRole("ADMINISTRADOR", "ASESOR")
                         .anyExchange().authenticated()
                 )
                 .exceptionHandling(exchange -> exchange

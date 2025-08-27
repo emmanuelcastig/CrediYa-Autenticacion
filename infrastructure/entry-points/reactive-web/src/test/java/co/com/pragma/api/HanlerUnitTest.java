@@ -1,7 +1,7 @@
 /*
 package co.com.pragma.api;
 
-import co.com.pragma.api.config.JwtProvider;
+import co.com.pragma.api.security.JwtProvider;
 import co.com.pragma.api.dto.SolicitanteRequest;
 import co.com.pragma.api.dto.SolicitanteResponse;
 import co.com.pragma.api.exception.ValidationException;
