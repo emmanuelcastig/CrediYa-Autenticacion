@@ -1,5 +1,7 @@
 package co.com.pragma.api;
 
+import co.com.pragma.api.dto.LoginRequest;
+import co.com.pragma.api.dto.LoginResponse;
 import co.com.pragma.api.dto.SolicitanteRequest;
 import co.com.pragma.api.dto.SolicitanteResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -104,6 +106,49 @@ public class RouterRest {
                                     @ApiResponse(
                                             responseCode = "400",
                                             description = "Documento inválido o mal formado"
+                                    ),
+                                    @ApiResponse(
+                                            responseCode = "500",
+                                            description = "Error interno del servidor"
+                                    )
+                            }
+                    )
+            ),
+            @RouterOperation(
+                    path = "/api/v1/login",
+                    beanClass = Handler.class,
+                    beanMethod = "login",
+                    operation = @Operation(
+                            operationId = "login",
+                            summary = "Inicio de sesión de usuario",
+                            description = "Permite a un usuario autenticarse con correo electrónico y clave. Devuelve un token JWT y el rol del usuario.",
+                            tags = {"Autenticación"},
+                            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                                    description = "Datos de login",
+                                    required = true,
+                                    content = @Content(
+                                            mediaType = "application/json",
+                                            schema = @Schema(implementation = LoginRequest.class)
+                                    )
+                            ),
+                            responses = {
+                                    @ApiResponse(
+                                            responseCode = "200",
+                                            description = "Login exitoso, retorna token y rol",
+                                            content = @Content(
+                                                    mediaType = "application/json",
+                                                    schema = @Schema(implementation = LoginResponse.class,
+                                                            example = "{\"token\": \"eyJhbGciOiJIUzI1NiIsInR...\", \"rol\": \"CLIENTE\"}")
+                                            )
+                                    ),
+                                    @ApiResponse(
+                                            responseCode = "401",
+                                            description = "Credenciales inválidas",
+                                            content = @Content(
+                                                    mediaType = "application/json",
+                                                    schema = @Schema(implementation = java.util.Map.class,
+                                                            example = "{\"error\": \"Credenciales invalidas\"}")
+                                            )
                                     ),
                                     @ApiResponse(
                                             responseCode = "500",
