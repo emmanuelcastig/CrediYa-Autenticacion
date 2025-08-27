@@ -22,11 +22,11 @@ public class JwtAuthenticationManager implements ReactiveAuthenticationManager {
             return Mono.empty();
         }
 
-        String username = jwtProvider.extractUsername(authToken);
+        String email = jwtProvider.extractEmail(authToken);
         String rol = jwtProvider.extractRol(authToken);
 
         return Mono.just(new UsernamePasswordAuthenticationToken(
-                username,
+                email,
                 null,
                 Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + rol))
         ));

@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.bind.support.WebExchangeBindException;
@@ -96,7 +98,7 @@ public class GlobalExceptionHandler {
     }
 
 
-   /* @ExceptionHandler(AuthenticationException.class)
+   @ExceptionHandler(AuthenticationException.class)
     public Mono<ResponseEntity<Map<String, Object>>> handleAuthException(AuthenticationException ex) {
         Map<String, Object> response = new HashMap<>();
         response.put("status", HttpStatus.UNAUTHORIZED.value());
@@ -105,6 +107,7 @@ public class GlobalExceptionHandler {
         return Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response));
     }
 
+
     @ExceptionHandler(AccessDeniedException.class)
     public Mono<ResponseEntity<Map<String, Object>>> handleAccessDenied(AccessDeniedException ex) {
         Map<String, Object> response = new HashMap<>();
@@ -112,5 +115,5 @@ public class GlobalExceptionHandler {
         response.put("error", "Acceso denegado");
         response.put("message", "No tienes permisos para acceder a este recurso");
         return Mono.just(ResponseEntity.status(HttpStatus.FORBIDDEN).body(response));
-    }*/
+    }
 }
