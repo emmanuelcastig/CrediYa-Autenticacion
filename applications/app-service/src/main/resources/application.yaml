@@ -7,15 +7,15 @@ spring:
   devtools:
     add-properties: false
   r2dbc:
-    host: localhost
+    host: "db_autenticacion"
     port: 5432
-    database: autenticaciondb
-    schema: public
-    username: postgres
+    database: "autenticaciondb"
+    schema: "public"
+    username: "postgres"
     password: 1234
   sql:
     init:
-      mode: always
+      mode: never
 
 management:
   endpoints:
